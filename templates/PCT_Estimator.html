@@ -1,1 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>PCT National Phase Estimator</title>
+</head>
+<body>
+  <h1>PCT National Phase Estimator</h1>
+  <label for="pct_number">PCT Application Number:</label>
+  <input type="text" id="pct_number" />
+  <button onclick="fetchDetails()">Fetch WIPO Data</button>
+  <table id="resultsTable" border="1" style="margin-top:20px; display:none;">
+    <thead>
+      <tr>
+        <th>Filing Date</th>
+        <th>Priority Date</th>
+        <th>Claim Count</th>
+        <th>Word Count</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td id="filingDateCell"></td>
+        <td id="priorityDateCell"></td>
+        <td id="claimCountCell"></td>
+        <td id="wordCountCell"></td>
+      </tr>
+    </tbody>
+  </table>
+  <script>
+    function fetchDetails() {
+      const pct = document.getElementById("pct_number").value;
+      fetch("/fetch_wipo", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ pct_number: pct })
+      })
+      .then(res => res.json())
+      .then(data => {
+        document.getElementById("filingDateCell").innerText = data.filing_date || "N/A";
+        document.getElementById("priorityDateCell").innerText = data.priority_date || "N/A";
+        document.getElementById("claimCountCell").innerText = data.claim_count || "N/A";
+        document.getElementById("wordCountCell").innerText = data.word_count || "N/A";
+        document.getElementById("resultsTable").style.display = "table";
+      })
+      .catch(err => console.error(err));
+    }
+  </script>
+</body>
+</html>
 
