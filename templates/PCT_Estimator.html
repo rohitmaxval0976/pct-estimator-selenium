@@ -3,50 +3,18 @@
 <head>
   <meta charset="UTF-8" />
   <title>PCT National Phase Estimator</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      padding: 30px;
-    }
-    h1 {
-      color: #005baa;
-    }
-    input, select, button {
-      padding: 8px;
-      margin: 6px;
-    }
-    table {
-      margin-top: 20px;
-      border-collapse: collapse;
-      width: 100%;
-    }
-    table, th, td {
-      border: 1px solid #ccc;
-    }
-    th, td {
-      padding: 10px;
-    }
-    #resultsTable {
-      display: none;
-    }
-  </style>
 </head>
 <body>
   <h1>PCT National Phase Estimator</h1>
-
   <label for="pct_number">PCT Application Number:</label>
-  <input type="text" id="pct_number" name="pct_number" />
-
+  <input type="text" id="pct_number" />
   <button onclick="fetchDetails()">Fetch WIPO Data</button>
-
-  <div id="fetchedDetails"></div>
-
-  <table id="resultsTable">
+  <table id="resultsTable" border="1" style="margin-top:20px; display:none;">
     <thead>
       <tr>
         <th>Filing Date</th>
         <th>Priority Date</th>
-        <th>No. of Claims</th>
+        <th>Claim Count</th>
         <th>Word Count</th>
       </tr>
     </thead>
@@ -59,38 +27,23 @@
       </tr>
     </tbody>
   </table>
-
   <script>
     function fetchDetails() {
       const pct = document.getElementById("pct_number").value;
-      if (!pct) {
-        alert("Please enter a PCT application number");
-        return;
-      }
-
       fetch("/fetch_wipo", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ pct_number: pct })
       })
-        .then(res => res.json())
-        .then(data => {
-          if (data.error) {
-            alert(data.error);
-            return;
-          }
-
-          document.getElementById("filingDateCell").innerText = data.filing_date || "N/A";
-          document.getElementById("priorityDateCell").innerText = data.priority_date || "N/A";
-          document.getElementById("claimCountCell").innerText = data.claim_count || "N/A";
-          document.getElementById("wordCountCell").innerText = data.word_count || "N/A";
-
-          document.getElementById("resultsTable").style.display = "table";
-        })
-        .catch(err => {
-          alert("Failed to fetch data.");
-          console.error(err);
-        });
+      .then(res => res.json())
+      .then(data => {
+        document.getElementById("filingDateCell").innerText = data.filing_date || "N/A";
+        document.getElementById("priorityDateCell").innerText = data.priority_date || "N/A";
+        document.getElementById("claimCountCell").innerText = data.claim_count || "N/A";
+        document.getElementById("wordCountCell").innerText = data.word_count || "N/A";
+        document.getElementById("resultsTable").style.display = "table";
+      })
+      .catch(err => console.error(err));
     }
   </script>
 </body>
