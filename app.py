@@ -1,4 +1,3 @@
-
 from flask import Flask, request, jsonify, render_template
 from wipo_selenium_fetcher import fetch_wipo_with_selenium
 
@@ -17,5 +16,9 @@ def fetch_wipo():
     result = fetch_wipo_with_selenium(pct_number)
     return jsonify(result)
 
+# ✅ Required for Render deployment
+import os
+
 if __name__ == '__main__':
-    app.run(debug=True)
+    port = int(os.environ.get("PORT", 5000))
+    app.run(host='0.0.0.0', port=port, debug=True)
