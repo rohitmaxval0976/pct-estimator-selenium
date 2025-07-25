@@ -1,15 +1,8 @@
+
 services:
   - type: web
     name: pct-estimator-selenium
     env: python
-    buildCommand: |
-      apt-get update && apt-get install -y chromium-driver chromium
-      pip install -r requirements.txt
-    startCommand: python app.py
-    envVars:
-      - key: PYTHONUNBUFFERED
-        value: "true"
-      - key: CHROME_BIN
-        value: "/usr/bin/chromium"
-      - key: PATH
-        value: "/usr/bin/chromium:$PATH"
+    buildCommand: ./build.sh
+    startCommand: gunicorn app:app
+    plan: free
